@@ -148,7 +148,7 @@ procedure = dict(
     revision_flag=dict(
         labels={0: "no revision", 1: "revision procedure"}, kind="categorical"
     ),
-    previous_surgery=dict(labels={0: "yes", 1: "no", 9: "missing"}, kind="categorcial"),
+    previous_surgery=dict(labels={1: "yes", 2: "no", 9: "missing"}, kind="categorcial"),
     symptom_period=dict(
         labels={
             1: "less than 1 year",
@@ -209,7 +209,7 @@ registration = dict(
 
 other = dict(
     provider_code={"kind":"categorical"},
-    year={"kind":"numerical"},
+    year={"kind":"ordinal", "labels":{"2016/17": "April 2016 - April 2017", "2017/18": "April 2017 - April 2018", "2018/19": "April 2018 - April 2019"}},
 )
 
 # unpack methods meta

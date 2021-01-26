@@ -112,3 +112,24 @@ def get_meta(columns: list) -> pd.DataFrame:
                 warnings.warn(f"Meta data was not found for {method} + {feature}.")
 
     return df_meta
+
+
+def clean_data(df_data: pd.DataFrame, df_meta: pd.DataFrame, replace_value=np.nan) -> pd.DataFrame:
+    """
+    cleans dat based on meta data.
+    :param df_data: DataFrame to clean
+    :param df_meta: Dataframe with e.g.range labels
+    :param replace_value: The value to replace non conforming values with
+    :return: Cleaned DataFrame
+    """
+    df = df_data.copy()
+    for col in df.columns:
+        if col in df_meta.index:
+            labels = df_meta.loc[col, "labels"]
+            range = df_meta.loc[col, "range"]
+            if labels == labels:
+                labels = [k for k, v in labels[0].items() if v != "missing"]
+                df.loc[df[col].isin(labels) == False, col] = replace_value
+            elif range == range:
+                df.loc[df[col].between(*range) == False, col] = replace_value
+    return df
