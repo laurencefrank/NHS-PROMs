@@ -51,6 +51,7 @@ def structure_name(col: str) -> str:
     # fix misspelled sucess -> success + eq_vas -> eqvas
     col = re.sub("sucess", "success", col)
     col = re.sub(r"eq_vas", r"eqvas", col)
+    col = re.sub(r"eq_5d", r"eq5d", col)
 
     # fix double prefix
     col = re.sub(fr"^((?:oks|ohs)_)(?={'|'.join(methods.keys())})", "", col)
