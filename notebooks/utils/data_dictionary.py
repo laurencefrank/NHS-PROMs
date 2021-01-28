@@ -101,7 +101,7 @@ demographics = dict(
         kind="ordinal",
     ),
     gender=dict(
-        labels={0: "not known", 1: "males", 2: "female", 9: "missing"},
+        labels={0: "not known", 1: "male", 2: "female", 9: "missing"},
         kind="categorical",
     ),
     living_arrangements=dict(

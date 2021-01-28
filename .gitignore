@@ -12,7 +12,7 @@ log.txt
 knmi_arcen.txt
 
 # Plots
-*.png
+#*.png
 
 # !data/school_holidays.csv
 
