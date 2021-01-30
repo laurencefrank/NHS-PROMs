@@ -9,6 +9,19 @@ import warnings
 
 from utils.data_dictionary import methods, column_meta
 
+def read_online_proms_data(urls, part="hip", org="provider"):
+    df = pd.DataFrame()
+    for url in urls:
+        response = requests.get(url)
+        with ZipFile(BytesIO(response.content)) as zipfile:
+            p = re.compile(fr"^{part} replacements? {org} [\d]{{4}}.csv$", flags=re.I)
+            zippedfiles = [file for file in zipfile.namelist() if p.match(file)]
+            for zippedfile in zippedfiles:
+                with zipfile.open(zippedfile) as thefile:
+                    df_file = pd.read_csv(thefile, na_values=["*"]).apply(downcast)
+                    print(f"loaded {zippedfile} from {url}.")
+                df = pd.concat([df, df_file])
+    return df.apply(downcast)
 
 def downcast(s, try_numeric=True, category=True):
     if try_numeric:
