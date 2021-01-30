@@ -1,11 +1,43 @@
 import numpy as np
 import pandas as pd
 import os
+import requests
 from zipfile import ZipFile
+from io import BytesIO
 import re
 import warnings
 
 from utils.data_dictionary import methods, column_meta
+
+
+def downcast(s, try_numeric=True, category=True):
+    if try_numeric:
+        s = pd.to_numeric(s, errors="ignore")
+
+    if category:
+        if s.dtype.kind == "O":
+            s = s.astype("category")
+
+    if s.dtype.kind == "f":
+        s = pd.to_numeric(s, errors="ignore", downcast="float")
+    elif s.dtype.kind == "i":
+        s = pd.to_numeric(s, errors="ignore", downcast="signed")
+        s = pd.to_numeric(s, errors="ignore", downcast="unsigned")
+
+    return s
+
+
+# source: https://techoverflow.net/2018/01/16/downloading-reading-a-zip-file-in-memory-using-python/
+def download_extract_zip(url):
+    """
+    Download a ZIP file and extract its contents in memory
+    yields (filename, file-like object) pairs
+    """
+    response = requests.get(url)
+    with ZipFile(BytesIO(response.content)) as thezip:
+        for zipinfo in thezip.infolist():
+            with thezip.open(zipinfo) as thefile:
+                yield zipinfo.filename, thefile
 
 
 def dir_digger(path: str, **args) -> list:
