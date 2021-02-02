@@ -209,7 +209,7 @@ registration = dict(
 
 other = dict(
     provider_code={"kind":"categorical"},
-    year={"kind":"ordinal", "labels":{"2016/17": "April 2016 - April 2017", "2017/18": "April 2017 - April 2018", "2018/19": "April 2018 - April 2019"}},
+    year={"kind":"ordinal", "labels":{"2016/17": "April 2016 - April 2017", "2017/18": "April 2017 - April 2018", "2018/19": "April 2018 - April 2019", "2019/20": "April 2019 - April 2020"}},
 )
 
 # unpack methods meta
