@@ -133,9 +133,7 @@ comorbidities = {
         "arthritis",
     ]
 }
-comorbidities.update(
-    {"disability": dict(labels={1: "yes", 2: "no", 9: "missing"}, kind="categorcial")}
-)
+disability = {"disability": dict(labels={1: "yes", 2: "no", 9: "missing"}, kind="categorical")}
 
 procedure = dict(
     procedure=dict(
@@ -234,6 +232,7 @@ column_meta = {
     **method_meta,
     **demographics,
     **comorbidities,
+    **disability,
     **procedure,
     **complications,
     **result,
