@@ -1,11 +1,96 @@
 import numpy as np
 import pandas as pd
 import os
+from os import path
+import requests
 from zipfile import ZipFile
+from io import BytesIO
 import re
 import warnings
 
 from utils.data_dictionary import methods, column_meta
+
+# from https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/patient-reported-outcome-measures-proms
+URL_PROMS_DATA = [
+    r"https://files.digital.nhs.uk/6C/A1D581/CSV%20Data%20Pack%202016-17%20Finalised.zip",
+    r"https://files.digital.nhs.uk/70/5176AA/CSV%20Data%20Pack%20Final%201718.zip",
+    r"https://files.digital.nhs.uk/52/A8FF7F/PROMs%20CSV%20Data%20Pack%20Finalised%202018-19.zip",
+    r"https://files.digital.nhs.uk/1F/51FEDE/PROMs%20CSV%20Data%20Pack%20Provisional%201920.zip",
+]
+
+def load_proms(part, org="provider", data_path="../data"):
+
+    # define path location
+    file_name = f"{part}-{org}.parquet"
+    full_path = path.join(data_path, file_name)
+
+    # load from disk if present,
+    # otherwise get it directly from NHS-source + rename columns + save to parquet
+    if path.isfile(full_path):
+        df_raw = pd.read_parquet(full_path)
+    else:
+        df_raw = read_online_proms_data(urls=URL_PROMS_DATA, part=part, org=org).apply(downcast)
+        df_raw.columns = (
+            df_raw.columns.str.replace("Pre-Op Q", "t0")
+                .str.replace("Post-Op Q", "t1")
+                .str.replace("Knee Replacement", "oks")
+                .str.replace("Hip Replacement", "ohs")
+                .str.replace("-", "_")
+                .str.replace(" ", "_")
+                .str.lower()
+        )
+        if len(df_raw)==0:
+            print("No data found!")
+        else:
+            try:
+                df_raw.to_parquet(full_path)
+            except:
+                print(f"Could not save {full_path}, but has the dataframe in memory.")
+
+    return df_raw
+
+def read_online_proms_data(urls, part="hip", org="provider"):
+    df = pd.DataFrame()
+    for url in urls:
+        response = requests.get(url)
+        with ZipFile(BytesIO(response.content)) as zipfile:
+            p = re.compile(fr"^{part} replacements? {org} [\d]{{4}}.csv$", flags=re.I)
+            zippedfiles = [file for file in zipfile.namelist() if p.match(file)]
+            for zippedfile in zippedfiles:
+                with zipfile.open(zippedfile) as thefile:
+                    df_file = pd.read_csv(thefile, na_values=["*"]).apply(downcast)
+                    print(f"loaded {zippedfile} from {url}.")
+                df = pd.concat([df, df_file])
+    return df.apply(downcast)
+
+def downcast(s, try_numeric=True, category=True):
+    if try_numeric:
+        s = pd.to_numeric(s, errors="ignore")
+
+    if category:
+        if s.dtype.kind == "O":
+            s = s.astype("category")
+
+    if s.dtype.kind == "f":
+        s = pd.to_numeric(s, errors="ignore", downcast="float")
+    elif s.dtype.kind == "i":
+        s = pd.to_numeric(s, errors="ignore", downcast="signed")
+        s = pd.to_numeric(s, errors="ignore", downcast="unsigned")
+
+    return s
+
+
+# source: https://techoverflow.net/2018/01/16/downloading-reading-a-zip-file-in-memory-using-python/
+def download_extract_zip(url):
+    """
+    Download a ZIP file and extract its contents in memory
+    yields (filename, file-like object) pairs
+    """
+    response = requests.get(url)
+    with ZipFile(BytesIO(response.content)) as thezip:
+        for zipinfo in thezip.infolist():
+            with thezip.open(zipinfo) as thefile:
+                yield zipinfo.filename, thefile
 
 
 def dir_digger(path: str, **args) -> list:
