@@ -1,0 +1,14 @@
+# python==3.8
+pandas==1.1.5
+pyarrow==3.0.0
+jupyterlab==3.0.6
+jupyter_contrib_nbextensions==0.5.1
+# nb_conda_kernels==2.3.1
+rise==5.7.1
+nb_black==1.0.7
+seaborn==0.11.1
+plotly==4.14.3
+altair==4.1.0
+statsmodels==0.12.1
+scikit-learn==0.24.1
+sktime==0.5.2
