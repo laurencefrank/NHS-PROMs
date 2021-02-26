@@ -1,4 +1,4 @@
-# installation from this file in conda: conda env create -f conda_env.yml
+# installation from this file in conda: conda env create -f environment.yml
 # remove if already there: conda env remove -n jads
 name: &env_name jads
 channels:
