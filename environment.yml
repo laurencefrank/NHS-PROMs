@@ -13,7 +13,6 @@ dependencies:
   - jupyter_contrib_nbextensions=0.5.1
   - nb_conda_kernels=2.3.1
   - rise=5.7.1
-#  - nb_black=1.0.7
   - seaborn=0.11.1
   - plotly=4.14.3
   - altair=4.1.0

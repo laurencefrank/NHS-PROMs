@@ -1,6 +1,20 @@
 import pandas as pd
 
 def downcast(s, try_numeric=True, category=False):
+    """
+    Downcasts a series to the lowest possible memory type
+
+    Parameters
+    ----------
+    s
+    try_numeric
+    category
+
+    Returns
+    -------
+
+    """
+
     if try_numeric:
         s = pd.to_numeric(s, errors="ignore")
 
