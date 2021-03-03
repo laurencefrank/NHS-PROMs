@@ -11,7 +11,7 @@ A data science case study of the NHS Digital PROMs data of hip and knee replacem
     
 ### Update (e.g. after new requirements)
 There are two ways possible:
-- From your active environment: `conda env update --file conda_env.yml`
+- From your active environment: `conda env update --file environment.yml`
 - If your environment is not activated: `conda env update --name jads --file environment.yml`
 
 ### Remove

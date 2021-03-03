@@ -59,3 +59,29 @@ def map_labels(series, kind="categorical", labels=None, backwards=False, **arg):
                 labels = {v: k for k, v in labels.items()}
             series = series.map(labels)
     return series
+
+
+def fillna_categories(self, value):
+    """
+    As pd.Series.fillna() or pd.DataFrame.fillna(), but adds a category first id dtype is category.
+    Parameters
+    ----------
+    self
+    value:
+        Fill value, just like fillna()
+
+    Returns
+    -------
+    NaN-less pd object
+    """
+
+    def fill_series(series):
+        if hasattr(series, "cat"):
+            if value not in series.cat.categories:
+                series.cat.add_categories(value, inplace=True)
+        return series.fillna(value)
+
+    if isinstance(self, pd.Series):
+        return self.fill_series(value)
+    elif isinstance(self, pd.DataFrame):
+        return self.apply(fill_series)
