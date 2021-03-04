@@ -1,0 +1,22 @@
+# installation from this file in conda: conda env create -f environment.yml
+# remove if already there: conda env remove -n jads
+name: &env_name jads
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - black=20.8b1
+  - pandas=1.1.5
+  - pyarrow=3.0.0
+  - jupyterlab=3.0.6
+  - jupyter_contrib_nbextensions=0.5.1
+  - nb_conda_kernels=2.3.1
+  - rise=5.7.1
+  - seaborn=0.11.1
+  - plotly=4.14.3
+  - altair=4.1.0
+  - statsmodels=0.12.1
+  - scikit-learn=0.24.1
+  - sktime=0.5.2
+  - imbalanced-learn=0.8.0
