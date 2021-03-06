@@ -76,12 +76,48 @@ def fillna_categories(self, value):
     """
 
     def fill_series(series):
-        if hasattr(series, "cat"):
-            if value not in series.cat.categories:
+        if series.isna().sum():
+            if hasattr(series, "cat") and value not in series.cat.categories:
                 series.cat.add_categories(value, inplace=True)
-        return series.fillna(value)
+            series = series.fillna(value)
+        return series
 
     if isinstance(self, pd.Series):
         return self.fill_series(value)
     elif isinstance(self, pd.DataFrame):
         return self.apply(fill_series)
+
+
+def pd_fit_resample(func):
+    """
+    Decorator that enables imblearn SMOTENC to be used with on a pd.DataFrame with argument categorical_features being:
+    - "infer" which determines categorical columns if the are of the dtype "category".
+    - an iterable with the column names.
+
+    Parameters
+    ----------
+    func: func
+        function to wrap: SMOTENC._fit_resample
+
+    Returns
+    wrapped function
+    -------
+
+    """
+    def inner_func(self, X, y):
+
+        if self.categorical_features == "infer" and isinstance(X, pd.DataFrame):
+            self.categorical_features = X.dtypes == "category"
+        elif (
+            hasattr(self.categorical_features, "__iter__")
+            and not isinstance(self.categorical_features, str)
+            and isinstance(self.categorical_features[0], str)
+            and isinstance(X, pd.DataFrame)
+        ):
+            self.categorical_features = [
+                X.columns.get_loc(col) for col in self.categorical_features
+            ]
+
+        return func(self, X, y)
+
+    return inner_func
