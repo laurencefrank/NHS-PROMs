@@ -106,7 +106,11 @@ def pd_fit_resample(func):
     """
     def inner_func(self, X, y):
 
-        if self.categorical_features == "infer" and isinstance(X, pd.DataFrame):
+        if (
+            isinstance(self.categorical_features, str)
+            and self.categorical_features == "infer"
+            and isinstance(X, pd.DataFrame)
+        ):
             self.categorical_features = X.dtypes == "category"
         elif (
             hasattr(self.categorical_features, "__iter__")
