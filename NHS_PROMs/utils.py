@@ -1,4 +1,9 @@
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+import imblearn
+import sklearn
+
 
 def downcast(s, try_numeric=True, category=False):
     """
@@ -78,7 +83,7 @@ def fillna_categories(self, value):
     def fill_series(series):
         if series.isna().sum():
             if hasattr(series, "cat") and value not in series.cat.categories:
-                series.cat.add_categories(value, inplace=True)
+                series = series.cat.add_categories(value)
             series = series.fillna(value)
         return series
 
@@ -125,3 +130,115 @@ def pd_fit_resample(func):
         return func(self, X, y)
 
     return inner_func
+
+
+def infer_categories_fit(func):
+    """
+    Decorator that enables Encoders with categories (like OneHotEncoder, OrdinalEncoder) to infer categories from
+    catagories if dtype is CategoricalDtype by using the argument categories="categories".
+    Parameters
+    ----------
+    func:
+        Encoder's fit function (og OneHotEncoder.fit)
+
+    Returns
+    -------
+    Decorated fit function that has the ability to process the argument categories="categories".
+
+    """
+    def inner_func(self, X, y=None):
+        if self.categories == "categories" and (X.dtypes == "category").all():
+            self.categories = [col.categories.to_list() for col in X.dtypes]
+
+        return func(self, X, y)
+
+    return inner_func
+
+
+class KindSelector:
+    """
+    Selects on kind of dtype of column of DataFrame to select for eg. column trabsformer in pipeline.
+    kinds kan be:
+    - numerical (dtype number)
+    - categorical (dtype category, not ordered)
+    - ordinal (dtype category, ordered)
+    """
+    def __init__(self, kind):
+        """
+        Defines kind of selection on init
+        Parameters
+        ----------
+        kind: str
+            kind to select on {"numerical", "categorical", "ordinal"}.
+        """
+        self.kind = kind
+
+    def __call__(self, df):
+        if self.kind == "numerical":
+            cols = df.select_dtypes("number").columns.to_list()
+        elif self.kind == "categorical":
+            cols = df.select_dtypes("category").columns
+            cols = [col for col in cols if not df[col].cat.ordered]
+        elif self.kind == "ordinal":
+            cols = df.select_dtypes("category").columns
+            cols = [col for col in cols if df[col].cat.ordered]
+        return cols
+
+
+def get_feature_names(sklobj, feature_names=None):
+    """
+    Extract feature names from pipeline with encoders
+
+    Parameters
+    ----------
+    sklobj: sklearn pipeline or estimator
+        pipeline to extract feature names from
+    feature_names: list
+        starting columns if no column transformer is present for example.
+
+    Returns
+    -------
+    list
+        list of feature names
+    """
+    if feature_names is None:
+        feature_names = []
+
+    if isinstance(sklobj, (imblearn.pipeline.Pipeline, sklearn.pipeline.Pipeline)):
+        for name, step in sklobj.steps:
+            get_feature_names(step, feature_names)
+    elif isinstance(sklobj, ColumnTransformer):
+        for name, transformer, columns in sklobj.transformers_:
+            feature_names += get_feature_names(transformer, columns)
+    elif isinstance(sklobj, OneHotEncoder):
+        feature_names = sklobj.get_feature_names(feature_names).tolist()
+    elif isinstance(sklobj, str):
+        if sklobj == "passthrough":
+            pass
+        elif sklobj == "drop":
+            feature_names = []
+
+    return feature_names
+
+
+def remove_categories(self, removals):
+    """
+    As pd.Series.cat.remove_categories() but checks if is category dtype and category exists.
+    Parameters
+    ----------
+    self
+    removals:
+        categories to remove, just like pd.Series.remove_categories
+
+    Returns
+    -------
+    Series with categories removed (values being NaN's now)
+    """
+
+    if hasattr(self, "cat"):
+        if isinstance(removals, str):
+            removals = [removals]
+        removals = [cat for cat in removals if cat in self.cat.categories]
+        if removals:
+            self = self.cat.remove_categories(removals=removals)
+    return self
