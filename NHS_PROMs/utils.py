@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import GridSearchCV
 import imblearn
 import sklearn
 
@@ -204,9 +205,11 @@ def get_feature_names(sklobj, feature_names=None):
     if feature_names is None:
         feature_names = []
 
-    if isinstance(sklobj, (imblearn.pipeline.Pipeline, sklearn.pipeline.Pipeline)):
+    if isinstance(sklobj, GridSearchCV):
+        feature_names = get_feature_names(sklobj.best_estimator_, feature_names)
+    elif isinstance(sklobj, (imblearn.pipeline.Pipeline, sklearn.pipeline.Pipeline)):
         for name, step in sklobj.steps:
-            get_feature_names(step, feature_names)
+            feature_names = get_feature_names(step, feature_names)
     elif isinstance(sklobj, ColumnTransformer):
         for name, transformer, columns in sklobj.transformers_:
             feature_names += get_feature_names(transformer, columns)
