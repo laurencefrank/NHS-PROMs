@@ -102,17 +102,24 @@ ct = ColumnTransformer(
     remainder="drop",
 )
 
+# kills warnings ;)
+std_xgb_args = dict(
+    use_label_encoder=True,
+    objective="multi:softprob",
+    eval_metric="mlogloss",
+)
+
 pl = Pipeline(
     (
         ("balancer", "passthrough"),
         ("by_column_kinds", ct),
-        ("model", BalancedXGBRFClassifier()),
+        ("model", BalancedXGBRFClassifier(**std_xgb_args)),
     )
 )
 
 param_grid = [
     {
-        "model__n_estimators": [4] #[8*2**e for e in range(8)],
+        "model__n_estimators": [8*2**e for e in range(8)],
     }
 ]
 
