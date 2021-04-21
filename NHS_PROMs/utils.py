@@ -1,10 +1,21 @@
+import os
 import pandas as pd
+import operator
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import GridSearchCV
 import imblearn
 import sklearn
 
+def most_recent_file(path, ext=None, prefix=None):
+    if ext is None:
+        ext=""
+    if prefix is None:
+        prefix = ""
+    files = {f.name: os.stat(f).st_mtime for f in os.scandir(path) if f.name.endswith(ext) and f.name.startswith(prefix)}
+    if files:
+        latest_file = max(files.items(), key=operator.itemgetter(1))[0]
+        return latest_file
 
 def downcast(s, try_numeric=True, category=False):
     """
