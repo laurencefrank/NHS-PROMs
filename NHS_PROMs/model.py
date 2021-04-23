@@ -82,7 +82,6 @@ class BalancedXGBRFClassifier(XGBRFClassifier):
     def fit(self, X, y, **kwargs):
         weights = compute_sample_weight(class_weight="balanced", y=y)
         kwargs.update({"sample_weight": weights})
-
         return super().fit(X, y, **kwargs)
 
 ct = ColumnTransformer(
@@ -119,7 +118,7 @@ pl = Pipeline(
 
 param_grid = [
     {
-        "model__n_estimators": [8*2**e for e in range(8)],
+        "model__n_estimators": [2] # [8*2**e for e in range(8)],
     },
 ]
 

@@ -20,10 +20,10 @@ config = {
                     "labels":["severe", "moderate", "mild-moderate", "satisfactory"],
                 },
                 "t1_eq5d_mobility":None,
-                "t1_eq5d_self_care":None,
-                "t1_eq5d_activity":None,
-                "t1_eq5d_discomfort":None,
-                "t1_eq5d_anxiety":None,
+                # "t1_eq5d_self_care":None,
+                # "t1_eq5d_activity":None,
+                # "t1_eq5d_discomfort":None,
+                # "t1_eq5d_anxiety":None,
             },
             "knee": {
                 "t1_oks_score": {
