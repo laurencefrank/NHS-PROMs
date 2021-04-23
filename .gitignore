@@ -5,6 +5,8 @@
 *.xls
 *.pkl
 *.json
+*.mdl
+*.zip
 ABT/.env
 logs/log.txt
 log.txt
