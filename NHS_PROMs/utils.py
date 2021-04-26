@@ -81,6 +81,7 @@ def map_labels(series, kind="categorical", labels=None, backwards=False, **arg):
 def fillna_categories(self, value):
     """
     As pd.Series.fillna() or pd.DataFrame.fillna(), but adds a category first id dtype is category.
+
     Parameters
     ----------
     self

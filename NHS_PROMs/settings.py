@@ -2,7 +2,6 @@ config = {
     "preprocessing":
         {
             "remove_columns_ending_with":
-
                 (
                     "code",  # is a coded score and not of interest for the case
                     "procedure",  # is the same for the hip or knee set
@@ -10,7 +9,13 @@ config = {
                     "assisted_by",  # is the same for all records
                     "profile",  # is a coded score and not of interest for the case
                     "predicted",  # are predictions of other models that are not supposed to be used
-                )
+                ),
+            "remove_low_info_categories":
+                {
+                    "t0_assisted": "no",
+                    "t0_previous_surgery": "no",
+                    "t0_disability": "no",
+                }
         },
     "outputs":
         {
@@ -31,10 +36,10 @@ config = {
                     "labels":["severe", "moderate", "mild-moderate", "satisfactory"],
                 },
                 "t1_eq5d_mobility":None,
-                "t1_eq5d_self_care":None,
-                "t1_eq5d_activity":None,
-                "t1_eq5d_discomfort":None,
-                "t1_eq5d_anxiety":None,
+                # "t1_eq5d_self_care":None,
+                # "t1_eq5d_activity":None,
+                # "t1_eq5d_discomfort":None,
+                # "t1_eq5d_anxiety":None,
             },
         },
     "score":"roc_auc_ovo_weighted",
