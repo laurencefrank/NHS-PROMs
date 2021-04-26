@@ -24,22 +24,42 @@ config = {
                     "bins":[0, 19, 29, 39, 48],
                     "labels":["severe", "moderate", "mild-moderate", "satisfactory"],
                 },
-                "t1_eq5d_mobility":None,
-                # "t1_eq5d_self_care":None,
-                # "t1_eq5d_activity":None,
-                # "t1_eq5d_discomfort":None,
-                # "t1_eq5d_anxiety":None,
+                "t1_eq5d_mobility":{
+                    "labels":["no problems", "some problems", "severe problems"],
+                },
+                # "t1_eq5d_self_care":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_activity":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_discomfort":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_anxiety":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
             },
             "knee": {
                 "t1_oks_score": {
                     "bins":[0, 19, 29, 39, 48],
                     "labels":["severe", "moderate", "mild-moderate", "satisfactory"],
                 },
-                "t1_eq5d_mobility":None,
-                # "t1_eq5d_self_care":None,
-                # "t1_eq5d_activity":None,
-                # "t1_eq5d_discomfort":None,
-                # "t1_eq5d_anxiety":None,
+                "t1_eq5d_mobility":{
+                    "labels":["no problems", "some problems", "severe problems"],
+                },
+                # "t1_eq5d_self_care":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_activity":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_discomfort":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
+                # "t1_eq5d_anxiety":{
+                #     "labels":["no problems", "some problems", "severe problems"],
+                # },
             },
         },
     "score":"roc_auc_ovo_weighted",

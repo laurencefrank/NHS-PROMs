@@ -321,31 +321,20 @@ class PROMsModel():
         -------
         dict()
             A dictionary with keys being the outputs and values being the probability predictions.
-            !!! ATTENTION !!!: The order of the label encoded values is alphabetical, not ordinal in the original Y.
-            Use self.labels_encoded() to retrieve the alphabetical encoded labels and order of predict_proba values.
         """
 
         y_hat = dict()
         for name, model in self.models.items():
             check_is_fitted(model)
             y_hat[name] = model.predict_proba(X)
+
+            # reorder labels according to configuration
+            org_labels = list(model.classes_)
+            new_labels = config["outputs"][self.kind][name]["labels"]
+            i = [org_labels.index(label) for label in new_labels]
+            y_hat[name] = y_hat[name][:, i]
+
         return y_hat
-
-    def labels_encoded(self):
-        """
-        Retrieves the alphabetical encoded labels and order of predict_proba values
-
-        Returns
-        -------
-        dict()
-            A dictionary with keys being the outputs and values being the encoded labels per output.
-        """
-
-        y_labels = dict()
-        for name, model in self.models.items():
-            check_is_fitted(model)
-            y_labels[name] = model.classes_
-        return y_labels
 
     def classification_reports(self):
         """
@@ -461,5 +450,5 @@ class PROMsModel():
             df_data = self.load_data("test").sample()
             X, Y = self.split_XY(df_data)
 
-        for name in self.outputs:
+        for name in self.models:
             display(self.force_plot(X, name))
