@@ -8,6 +8,7 @@ import pandas as pd
 import pickle
 import warnings
 import re
+import matplotlib.pyplot as plt
 
 from NHS_PROMs.settings import config
 from NHS_PROMs.model import pl, param_grid
@@ -32,7 +33,7 @@ shap.initjs()
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, plot_confusion_matrix
 from sklearn import set_config
 from sklearn.utils.validation import check_is_fitted
 
@@ -424,7 +425,7 @@ class PROMsModel():
         fp = shap.force_plot(
             base_value=base_value,
             shap_values=shap_values,
-            #             features=X_pre,
+            # features=X_pre,
             feature_names=feature_names,
             out_names=out_names,
             #             link="logit",
@@ -452,3 +453,22 @@ class PROMsModel():
 
         for name in self.models:
             display(self.force_plot(X, name))
+
+    def confusion_plots(self, save=False):
+        """
+        Plots confusion plots for every output, based on the test set.
+
+        Returns
+        -------
+        dict()
+            A dictionary with keys being the outputs and values being the plt figures.
+        """
+
+        df_data = self.load_data("test")
+        X, Y = self.split_XY(df_data)
+
+        for name, model in self.models.items():
+            check_is_fitted(model)
+            plot_confusion_matrix(model, X, Y[name], cmap=plt.cm.Blues)
+            if save:
+                plt.savefig(fname=f"confusion_matrix_{name}.png")
