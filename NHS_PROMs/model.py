@@ -91,7 +91,7 @@ pl = Pipeline(
 # parameter grid for GridSearchCV
 param_grid = [
     {
-        "model__n_estimators": [2] #[8*2**e for e in range(7)],
+        "model__n_estimators": [8*2**e for e in range(7)],
     },
 ]
 

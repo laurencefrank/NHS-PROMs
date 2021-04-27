@@ -416,7 +416,7 @@ class PROMsModel():
         shap_values = explainer.shap_values(X_pre)[i_max]
         base_value = logodds_to_proba(explainer.expected_value)[i_max]
         feature_names = [re.sub("(t0_|gender_|_yes|_no|)", "", n).replace("_", " ") for n in get_feature_names(model)]
-        out_names = f"{name} = {self.labels_encoded()[name][i_max]}"
+        out_names = f"{name} = {model.classes_[i_max]}"
 
         # rescaling according to https://github.com/slundberg/shap/issues/29
         shap_values = shap_values / shap_values.sum() * (end_value - base_value)
