@@ -1,4 +1,11 @@
 config = {
+    # from https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/patient-reported-outcome-measures-proms
+    "url_proms_data":[
+    r"https://files.digital.nhs.uk/6C/A1D581/CSV%20Data%20Pack%202016-17%20Finalised.zip",
+    r"https://files.digital.nhs.uk/70/5176AA/CSV%20Data%20Pack%20Final%201718.zip",
+    r"https://files.digital.nhs.uk/52/A8FF7F/PROMs%20CSV%20Data%20Pack%20Finalised%202018-19.zip",
+    r"https://files.digital.nhs.uk/1F/51FEDE/PROMs%20CSV%20Data%20Pack%20Provisional%201920.zip",
+    ],
     "preprocessing":
         {
             "remove_columns_ending_with":

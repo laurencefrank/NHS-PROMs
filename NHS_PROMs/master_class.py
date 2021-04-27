@@ -469,6 +469,7 @@ class PROMsModel():
 
         for name, model in self.models.items():
             check_is_fitted(model)
-            plot_confusion_matrix(model, X, Y[name], cmap=plt.cm.Blues)
+            plot_confusion_matrix(model, X, Y[name], cmap=plt.cm.Blues, xticks_rotation=45)
+            plt.title(f"\nConfusion matrix for {name}:\n")
             if save:
                 plt.savefig(fname=f"confusion_matrix_{name}.png")

@@ -8,14 +8,16 @@ import re
 import warnings
 
 from NHS_PROMs.data_dictionary import methods, meta_dict
+from NHS_PROMs.settings import config
 
+URL_PROMS_DATA = config["url_proms_data"]
 # from https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/patient-reported-outcome-measures-proms
-URL_PROMS_DATA = [
-    r"https://files.digital.nhs.uk/6C/A1D581/CSV%20Data%20Pack%202016-17%20Finalised.zip",
-    r"https://files.digital.nhs.uk/70/5176AA/CSV%20Data%20Pack%20Final%201718.zip",
-    r"https://files.digital.nhs.uk/52/A8FF7F/PROMs%20CSV%20Data%20Pack%20Finalised%202018-19.zip",
-    r"https://files.digital.nhs.uk/1F/51FEDE/PROMs%20CSV%20Data%20Pack%20Provisional%201920.zip",
-]
+# URL_PROMS_DATA = [
+#     r"https://files.digital.nhs.uk/6C/A1D581/CSV%20Data%20Pack%202016-17%20Finalised.zip",
+#     r"https://files.digital.nhs.uk/70/5176AA/CSV%20Data%20Pack%20Final%201718.zip",
+#     r"https://files.digital.nhs.uk/52/A8FF7F/PROMs%20CSV%20Data%20Pack%20Finalised%202018-19.zip",
+#     r"https://files.digital.nhs.uk/1F/51FEDE/PROMs%20CSV%20Data%20Pack%20Provisional%201920.zip",
+# ]
 
 
 def load_proms(part, org="provider", data_path="../data"):
@@ -28,7 +30,7 @@ def load_proms(part, org="provider", data_path="../data"):
     if path.isfile(full_path):
         df_raw = pd.read_parquet(full_path)
     else:
-        df_raw = read_online_proms_data(urls=URL_PROMS_DATA, part=part, org=org)
+        df_raw = read_online_proms_data(urls=config["url_proms_data"], part=part, org=org)
         df_raw.columns = (
             df_raw.columns.str.replace("Pre-Op Q", "t0")
                 .str.replace("Post-Op Q", "t1")
