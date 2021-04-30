@@ -10,6 +10,13 @@ mobility and discomfort after the surgery based on a questionaire before the sur
 the likeliness of it and explains why it predicts it. This can be of help for surgeon and patient to manage and explain
 expectations.
 
+### Group 5 team members
+- Lidwine Chang
+- Madou Derksen
+- Laurence Frank
+- Frank Niemantsverdriet
+- Bram Vonk
+
 ### Model Class
 
 A class is managing the data cleaning, model training and results evaluation.
